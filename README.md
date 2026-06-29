@@ -72,7 +72,13 @@ The build uses a multi-stage approach:
 
 ### 5. a. Build the Wayland image
 
-If you want your bootc image to also have Wayland (GUI) with GPU acceleration, you will need to build the wayland image :
+If you want your bootc image to also have Wayland (GUI) with GPU acceleration, you will first need to fetch the egl-wwayland library sources : 
+
+```bash
+wget https://github.com/NVIDIA/egl-wayland/archive/refs/tags/1.1.20.tar.gz
+```
+
+then build the wayland image :
 
 ```bash
 podman build -t dgx-spark-bootc:wayland -f Containerfile.wayland .
@@ -119,7 +125,7 @@ To deploy from scratch, we will need to create an installer iso with our custom 
 sudo mkdir -p output; sudo podman run --rm -it --privileged --pull=newer --security-opt label=type:unconfined_t -v /var/lib/containers/storage:/var/lib/containers/storage -v $(pwd)/output:/output registry.redhat.io/rhel10/bootc-image-builder:10.2 --type bootc-installer --installer-payload-ref quay.io/<your namespace>/spark-bootc:wayland quay.io/<your namespace>/spark-bootc:installer
 ```
 
-This example is using the wayland image to be installed, this can be pointed to thye standard image as well
+This example is using the wayland image to be installed, this can be pointed to the standard image as well
 
 You will also need to create a kickstart and embed it in the install iso to set the right kernel cmdline and a user. an example kickstart is in this repository and may be customized to set a different user or password, add ssh rules etc ... You'll also need to have the lorax package installed locally to embed the kickstart into the iso
 
